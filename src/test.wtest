@@ -1,0 +1,75 @@
+import universidad.*
+import profesionales.*
+import empresas.*
+import solicitantes.*
+
+describe "Test Empresa"{
+	const sanMartin = new Universidad(provincia="Buenos Aires",honorariosRecomendados=3500)	
+	const rosario = new Universidad(provincia="Santa Fe",honorariosRecomendados=2800)
+	const corrientes = new Universidad(provincia="Corrientes",honorariosRecomendados=4200)
+	const hurlingham = new Universidad(provincia="Buenos Aires",honorariosRecomendados=8800)	
+	
+	const juana = new Vinculado(universidad=rosario)
+	const melina = new Asociado(universidad=corrientes)
+	const rocio = new Libre(universidad=hurlingham,honorarios = 5000, puedeTrabajar=#{"Santa Fe","Cordoba","Buenos Aires"})
+	const luciana = new Libre(universidad=rosario,honorarios = 3200, puedeTrabajar=#{"Santa Fe","Entre Rios"})
+
+	const emp1 = new Empresa(honorariosDeReferencia= 3500, profesionales=#{juana,melina,rocio,luciana})
+	
+	const gerardo = new Persona(provinciaDondeVive="Corrientes")
+
+	const muni1 = new Institucion(universidadesQueReconoce=#{rosario,hurlingham})
+	const muni2 = new Institucion(universidadesQueReconoce=#{sanMartin})
+
+
+	test "cuantos estudiaron en: Rosario"{
+		assert.equals(2, emp1.cuantosEstudiaronEn(rosario))
+	}
+
+	test "cuantos estudiaron en: hurlingham"{
+		assert.equals(1, emp1.cuantosEstudiaronEn(hurlingham))
+	}
+	test "cuantos estudiaron en: San Martin"{
+		assert.equals(0, emp1.cuantosEstudiaronEn(sanMartin))
+	}
+
+	test " profesionales mas caros"{
+		assert.equals(#{rocio}, emp1.profesionalesCaros())
+	}
+	
+	test "universidadesFormadoras"{
+		assert.equals(#{rosario,corrientes,hurlingham},emp1.universidadesFormadoras())
+	}
+	
+	test "no es universidadesFormadoras"{
+		assert.notThat(emp1.universidadesFormadoras().contains(sanMartin))
+	}
+	
+	test "profesional mas barato"{
+		assert.equals(juana,emp1.profesionalMasBarato())
+}
+
+	test " Es de gente acotada"{
+		assert.that(emp1.esDeGenteAcotada())
+	}
+	
+	test " gerardo puede ser atendido por la empresa"{
+		assert.that(emp1.puedeSatisfacer(gerardo))
+	}
+	
+	test " gerardo puede ser atendido por melina "{
+		assert.that(gerardo.puedeSerAtendido(melina))
+	}
+	test " gerardo NO puede ser atendido por juana"{
+		assert.notThat(gerardo.puedeSerAtendido(juana))
+	}
+	
+	test " muni1 puede ser atendido por la empresa"{
+		assert.that(emp1.puedeSatisfacer(muni1))
+	}
+	test " muni2 no puede ser atendido por la empresa"{
+		assert.notThat(emp1.puedeSatisfacer(muni2))
+	}
+	
+		
+}
